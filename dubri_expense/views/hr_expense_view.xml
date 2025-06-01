@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="dubri_view_hr_expense_sheet_form" model="ir.ui.view">
+			<field name="name">dubri.hr.expense.sheet.form</field>
+			<field name="model">hr.expense.sheet</field>
+			<field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form" />
+			<field name="arch" type="xml">
+
+				<xpath expr="//header" position="inside">
+					<button name="cos_approve_sheet" string="Corporate Service Approve" groups="dubri_expense.corporate_service_user" type="object" class="oe_highlight" states="manager_approved"/>
+					<button name="action_finance_approve_sheet" string="Finance Approve"   groups="dubri_expense.finance_user"  type="object" class="oe_highlight" states="finance_approved"/>
+					<button name="md_approve_sheet" string="Head, Corporate Service Approve" groups="dubri_expense.head_corporate_service" type="object" class="oe_highlight" states="cos_head_approved"/>
+					<button name="%(hr_expense.hr_expense_refuse_wizard_action)d" class="btn btn-danger" states="manager_approved,cos_head_approved,finance_approved,cos_approved,md_approved" context="{'hr_expense_refuse_model':'hr.expense.sheet'}" string="Refuse" type="action" data-hotkey="x" />
+				</xpath>
+<!--				<xpath expr="//field[@name='user_id']" position="after">-->
+<!--                    <field name="req_md" attrs="{'readonly': [('state', 'not in', ['draft','submit','manager_approved'])]}"/>-->
+<!--				</xpath>-->
+
+			</field>
+		</record>
+
+
+
+		<record id="dubri_hr_expense_sheet_view_search" model="ir.ui.view">
+			<field name="name">dubri.hr.expense.sheet</field>
+			<field name="model">hr.expense.sheet</field>
+			<field name="inherit_id" ref="hr_expense.hr_expense_sheet_view_search"/>
+			<field name="arch" type="xml">
+				<xpath expr="//search" position="inside">
+					<filter domain="[('state', 'in', ('manager_approved','cos_head_approved','finance_approved','cos_approved','md_approved'))]" string="Pending COS Approval" name="pending_approval" help="Confirmed Expenses"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="dubri_action_hr_expense_sheet_all_to_approve" model="ir.actions.act_window">
+            <field name="name">Expense Reports to Approve</field>
+            <field name="res_model">hr.expense.sheet</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,activity</field>
+            <field name="search_view_id" ref="dubri_hr_expense_sheet_view_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_pending_approval': 1}</field>
+            <field name="view_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No expense reports found
+              </p><p>
+                Approve the new expense reports submitted by the employees you manage.
+              </p>
+            </field>
+        </record>
+
+		<menuitem id="dubri_menu_hr_expense_sheet_all_to_approve"
+                  name="Pending COS Approval" sequence="3" parent="hr_expense.menu_hr_expense_root"
+				  groups="dubri_expense.corporate_service_user,dubri_expense.finance_user,dubri_expense.head_corporate_service"
+                  action="dubri_action_hr_expense_sheet_all_to_approve"/>
+
+	</data>
+</odoo>
