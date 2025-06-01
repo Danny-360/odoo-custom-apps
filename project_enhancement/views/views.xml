@@ -1,0 +1,426 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <!-- <record model="ir.ui.view" id="project_enhancement.list">
+      <field name="name">project_enhancement list</field>
+      <field name="model">project_enhancement.project_enhancement</field>
+      <field name="arch" type="xml">
+        <form>
+          <field name="department_manager_id"/>
+          <field name="team_lead_id"/>
+          <field name="value2"/>
+        </form>
+      </field>
+    </record> -->
+
+
+
+
+    <!-- Inherit the existing Kanban view -->
+    <record id="view_project_kanban_no_create" model="ir.ui.view">
+        <field name="name">project.project.kanban.no.create</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Disable the Create button in the Kanban view -->
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="create">false</attribute>
+            </xpath>
+
+            <!-- Add total_project to the control panel (header) -->
+            <xpath expr="//kanban/templates" position="before">
+                <div class="oe_kanban_summary">
+                    <strong>Total Projects: </strong>
+                    <span><field name="total_project"/></span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    
+    <!-- Form View for Project Enhancement-->
+    <record id="view_project_project_form_inherit" model="ir.ui.view">
+        <field name="name">project.project.form.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <!-- Disable the Create button in the Form view -->
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">false</attribute>
+            </xpath>
+
+            <!-- Add custom field before 'user_id' -->
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="pmo"/>
+            </xpath>
+
+
+            <!-- Replace 'user_id' with 'project_manager' -->
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="project_manager"/>                
+            </xpath>
+
+
+            <xpath expr="//field[@name='project_manager']" position="after">
+                <field name="starting_date"/>
+                <field name="ending_date"/>
+            </xpath>
+
+            <!-- Modify the settings page and add a new group with custom fields -->
+            <xpath expr="//page[@name='settings']" position="inside">
+                <group string="Department Information">
+                    <field name="department_id"/>
+                    <field name="department_manager_id" readonly="1"/>
+                    <field name="team_lead_id"/>
+                    <field name="status"/>                    
+                </group>
+
+                <!-- Expenses Group with One2many field -->
+                <group string="Expenses" colspan="5">
+                    <field name="expense_ids" widget="one2many" options="{'no_create': True}"/>
+                </group>
+
+                <!-- Budget Monitoring and Profitability Group -->
+                <group string="Budget Monitoring and Profitability">
+                    <field name="budget"/>
+                    <field name="budget_utilized" readonly="1"/>
+                    <field name="budget_remaining" readonly="1"/>
+                    <field name="forecasted_budget_overrun" readonly="1"/>
+                    <field name="budget_alert_threshold"/>
+                    <field name="profitability"/>
+                </group>
+            </xpath>
+
+        <!-- Ensure the Chatter is Present in the View -->
+            <xpath expr="//form/sheet" position="inside">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Inherit the existing project tree view -->
+    <record id="view_project_project_tree_inherit" model="ir.ui.view">
+        <field name="name">project.project.tree.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <!-- Disable the Create button in the Tree view -->
+            <xpath expr="//tree" position="attributes">
+                <attribute name="create">false</attribute>
+            </xpath>
+
+            <!-- Replace 'user_id' field with 'project_manager' -->
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="project_manager"/>
+            </xpath>
+
+            <!-- Add new fields to the Tree view -->
+            <xpath expr="//tree" position="inside">
+                <field name="department_id"/>
+                <field name="department_manager_id"/>
+                <field name="team_lead_id"/>
+                <field name="status"/>
+                <field name="starting_date"/>
+                <field name="ending_date"/>
+            </xpath>
+
+            <!-- Add the Total Projects field in the header (search/filter section) -->
+            <!-- <xpath expr="//header" position="inside">
+                <div class="oe_stat_button">
+                    <span>Total active projects is:</span>
+                    <field name="total_project" widget="char" readonly="1"/>
+                </div>
+            </xpath> -->
+        </field>
+    </record>
+
+
+
+    <!-- search View for Project Enhancement-->
+    <record id="view_project_project_search_inherit" model="ir.ui.view">
+        <field name="name">project.project.search.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">                
+                    <field name="department_id"/>
+                    <field name="status"/>
+                    <field name="project_manager"/>
+                    <field name="team_lead_id"/>
+                    <field name="task_names" string="Task Names"/>
+
+                    <filter name="task" string="Tasks" domain="[('task_ids', '!=', False)]"/>                
+                    <filter string="Active" name="active"
+                            domain="[('status', '=', 'active')]" />
+                    <filter string="Closed" name="closed" domain="[('status', '=', 'closed')]" />
+                    <filter string="On Hold" name="on_hold" domain="[('status', '=', 'on_hold')]"/>
+                    <filter string="De-prioritized" name="deprioritized" domain="[('status', '=', 'deprioritized')]"/>
+            </xpath>
+
+        <!-- Group By search View for Project Enhancement -->
+            <xpath expr="//search/group" position="inside">
+                        <!-- <group expand="0" string="Group By"> -->
+                            <filter name="group_by_department_id" string="Department" context="{'group_by':'department_id'}"/>  
+                            <filter name="group_by_status" string="Status" context="{'group_by':'status'}"/>
+                            <filter name="group_task" string="Tasks" context="{'group_by': 'task_ids'}"/>
+                            <filter name="group_starting_date" string="Starting Date" domain="[]" context="{'group_by': 'starting_date'}"/>
+                            <filter name="group_ending_date" string="Ending Date" domain="[]" context="{'group_by': 'ending_date'}"/>                          
+                        <!-- </group> -->
+                </xpath>            
+        </field>
+    </record>
+
+
+    <!-- Add a default filter -->
+    <record id="default_project_filter_active" model="ir.filters">
+        <field name="name">Active Projects</field>
+        <field name="model_id">project.project</field>
+        <field name="context">{}</field>
+        <field name="domain">[('status', 'in', ['active', 'on_hold'])]</field>
+        <field name="is_default">True</field>
+    </record>
+
+
+
+
+
+    <!-- Form View for Project Expense extension -->
+    <record id="view_hr_expense_form_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.form.inherit</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Use XPath to insert the project_id field after the description field -->
+            <xpath expr="//sheet/group" position="after">
+                <group>
+                    <field name="project_id" placeholder="Select a Project"/>                        
+                    <field name="category_id"/>
+                    <field name="transport_trip_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tree or List View for Project Expense extension -->
+    <record id="view_hr_expense_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.tree.inherit</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.view_expenses_tree"/>
+        <field name="arch" type="xml">
+            <!-- Use XPath to insert the project_id field after the description field -->
+            <xpath expr="//tree" position="inside">                    
+                    <field name="project_id"/>
+                    <field name="category_id"/>                    
+                    <field name="transport_trip_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View for Project Expense extension -->
+    <record id="view_hr_expense_search_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.search.inherit</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search"/>
+        <field name="arch" type="xml">
+            <!-- Use XPath to insert the project_id field after the description field -->
+
+            <!-- Add fields to the search view -->
+            <xpath expr="//search" position="inside">
+                    <field name="project_id"/>                        
+                    <field name="category_id"/>
+                    <field name="transport_trip_id"/>
+            </xpath>
+            
+            <!-- Adds filters to the group by section -->
+            <xpath expr="//search/group" position="inside">
+                    <!-- <group expand="0" string="Group By"> -->
+                        <filter name="group_by_project" string="Project" context="{'group_by':'project_id'}"/>
+                        <filter name="group_by_category" string="Category" context="{'group_by':'category_id'}"/>
+                        <filter name="group_by_transport_trip" string="Transport/Trip" context="{'group_by':'transport_trip_id'}"/>
+                    <!-- </group> -->
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Form View for Project Planning Enhancement and Extension-->    
+    <record id="view_planning_slot_form_inherit" model="ir.ui.view">
+            <field name="name">planning.slot.form.inherit</field>
+            <field name="model">planning.slot</field>
+            <field name="inherit_id" ref="planning.planning_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Use XPath to insert the project_id field after the description field -->
+                <xpath expr="//sheet/group" position="inside">
+                    <group>
+                        <!-- <field name='schedule_type'/> -->
+                        <field name="project_id" />
+                        <field name="task_id" />
+                        <!-- <field name='training_id' attrs="{'invisible': [('schedule_type', '!=', 'training')]}"/> -->
+                    </group>
+                </xpath>
+            </field>
+    </record>
+
+    <!-- Tree or List View for Project Planning Enhancement and Extension     -->
+    <record id="view_planning_slot_tree_inherit" model="ir.ui.view">
+        <field name="name">planning.slot.tree.inherit</field>
+        <field name="model">planning.slot</field>
+        <field name="inherit_id" ref="planning.planning_view_tree"/>
+        <field name="arch" type="xml">
+            <!-- #  Use XPath to insert the project_id field after the description field -->
+            <xpath expr="//tree" position="inside">
+                    <field name="project_id"/>
+                    <field name="task_id"/>
+                    <!-- <field name="training_id"/> -->
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View for Project Planning Enhancement and Extension     -->
+    <record id="view_planning_slot_search_inherit" model="ir.ui.view">
+        <field name="name">planning.slot.search.inherit</field>
+        <field name="model">planning.slot</field>
+        <field name="inherit_id" ref="planning.planning_view_search"/> <!-- Reference the original search view -->
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="project_id" string="Project" />
+                <field name="task_id" string="Task" />
+
+                <!-- A view to filter by group -->
+                <group expand="0" string="Group By">
+                    <filter name="group_by_project" string="Project" context="{'group_by':'project_id'}"/>
+                    <filter name="group_by_task" string="Task" context="{'group_by':'task_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <!-- Form View for Transport/Trip Approval Enhancement and Extension-->    
+    <record id="view_approval_request_form_inherit" model="ir.ui.view">
+        <field name="name">approval.request.form.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="inside">
+                <group>
+                    <field name="account_id"/>
+                    <field name="project_id" string="Project" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tree or List View for Transport/Trip Approval Enhancement and Extension-->    
+    <record id="view_approval_request_tree_inherit" model="ir.ui.view">
+        <field name="name">approval.request.tree.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">                    
+                    <field name="account_id"/>  
+                    <field name="project_id"/> 
+                                        
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View for Transport/Trip Approval Enhancement and Extension-->    
+    <record id="view_approval_request_search_inherit" model="ir.ui.view">
+        <field name="name">approval.request.search.inherit</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_search_view_search"/> <!-- Reference the original search view -->
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="project_id" string="Project" />
+
+                <!-- A view to filter by group -->
+                <group expand="0" string="Group By">
+                    <filter name="group_by_project" string="Project" context="{'group_by':'project_id'}"/>                        
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+
+
+
+    
+
+
+
+
+
+
+    <!-- This adds approval Request as a menu under the accounding module -->
+    <record id="action_approval_requests" model="ir.actions.act_window">
+        <field name="name">Approval Requests</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Click to create a new approval request. -->
+            </p>
+        </field>
+    </record>    
+
+    <menuitem id="menu_approval_in_accounting" name="Approvals" parent="account.menu_finance_entries_actions" action="project_enhancement.action_approval_requests" sequence="30"/>
+
+
+
+
+
+
+
+        <!-- actions opening views on models -->
+    <!--
+        <record model="ir.actions.act_window" id="project_enhancement.action_window">
+        <field name="name">project_enhancement window</field>
+        <field name="res_model">project_enhancement.project_enhancement</field>
+        <field name="view_mode">tree,form</field>
+        </record>
+    -->
+
+        <!-- server action to the one above -->
+    <!--
+        <record model="ir.actions.server" id="project_enhancement.action_server">
+        <field name="name">project_enhancement server</field>
+        <field name="model_id" ref="model_project_enhancement_project_enhancement"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form",
+            "res_model": model._name,
+            }
+        </field>
+        </record>
+    -->
+
+        <!-- Top menu item -->
+    <!--
+        <menuitem name="project_enhancement" id="project_enhancement.menu_root"/>
+    -->
+        <!-- menu categories -->
+    <!--
+        <menuitem name="Menu 1" id="project_enhancement.menu_1" parent="project_enhancement.menu_root"/>
+        <menuitem name="Menu 2" id="project_enhancement.menu_2" parent="project_enhancement.menu_root"/>
+    -->
+        <!-- actions -->
+    <!--
+        <menuitem name="List" id="project_enhancement.menu_1_list" parent="project_enhancement.menu_1"
+                action="project_enhancement.action_window"/>
+        <menuitem name="Server to list" id="project_enhancement" parent="project_enhancement.menu_2"
+                action="project_enhancement.action_server"/>
+    -->
+  </data>
+</odoo>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_project_user,project_project.user,model_project_project,base.group_user,1,1,1,0
+access_project_owner,access.project.owner,project.model_project_project,project_enhancement.group_project_owner,1,1,1,0
+access_department_manager,access.department.manager,project.model_project_project,project_enhancement.group_project_department_manager,1,1,1,1
+access_project_admin,access.project.admin,project.model_project_project,project_enhancement.group_project_admin,1,1,1,1
+access_role_assignment_wizard_user,role.assignment.wizard.user,model_role_assignment_wizard,base.group_user,1,1,1,0
+access_role_assignment_wizard_project_owner,role.assignment.wizard.project_owner,model_role_assignment_wizard,project_enhancement.group_project_owner,1,1,1,0
+access_role_assignment_wizard_project_admin,role.assignment.wizard.project_admin,model_role_assignment_wizard,project_enhancement.group_project_admin,1,1,1,1
+

@@ -1,0 +1,36 @@
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<odoo>
+    <data>
+        <!-- Update existing action -->
+
+
+        <!-- <record id="action_model" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('status', 'in', ['active'])]</field>
+            <field name="context">{'search_default_active_filter': 1}</field>
+        </record> -->
+
+
+        <!-- <record id="action_project_project" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('status', 'in', ['active', 'on_hold', 'deprioritized'])]</field>
+        </record> -->
+
+        <!-- Inherit the project action -->
+        <!-- <record id="project.action_view_project" model="ir.actions.act_window">
+            <field name="context" eval="{'active_project_count': env['project.project']._compute_active_project_count()}"/>
+        </record> -->
+
+        <!-- <record id="project.action_view_project" model="ir.actions.act_window">
+            <field name="context" eval="{'default_status': 'active'}"/>
+        </record> -->
+
+        <!-- <record id="project.open_view_project_all_config" model="ir.actions.act_window">
+            <field name="context" eval="env['project.project'].get_active_project_context()"/>
+        </record> -->
+    </data>
+</odoo>

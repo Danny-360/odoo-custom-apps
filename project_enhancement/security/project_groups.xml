@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Create a new project_enhancement catetgory -->
+        <record id="category_project_enhancement" model="ir.module.category">
+            <field name="name">Project Enhancement</field>
+            <field name="description">Category for Project Enhancement Module's related roles</field>        
+        </record>
+       
+        <!-- Project Owner Group -->
+        <record id="group_project_owner" model="res.groups">
+            <field name="name">Project Owner</field>
+            <field name="category_id" ref="project_enhancement.category_project_enhancement"/>           
+        </record>
+
+
+        <!-- Departmental Manager Group -->
+        <record id="group_project_department_manager" model="res.groups">
+            <field name="name">Departmental Manager</field>
+            <field name="category_id" ref="project_enhancement.category_project_enhancement"/>
+        </record>
+
+        <!-- Admin Group -->
+        <record id="group_project_admin" model="res.groups">
+            <field name="name">Project Admin</field>
+            <field name="category_id" ref="project_enhancement.category_project_enhancement"/>
+        </record>
+
+        <!-- <record id="group_project_user" model="res.groups">
+            <field name="name">Project User</field>
+            <field name="category_id" ref="base.module_category_project"/>
+        </record> -->
+    </data>
+</odoo>
+
+

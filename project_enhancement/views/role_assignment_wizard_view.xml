@@ -1,0 +1,21 @@
+<odoo>
+    <record id="view_role_assignment_wizard" model="ir.ui.view">
+        <field name="name">role.assignment.wizard.form</field>
+        <field name="model">role.assignment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Role Assignment">
+                <group>
+                    <field name="project_id"/>
+                    <field name="role"/>
+                    <field name="response"/>
+                    <field name="decline_reason" attrs="{'invisible': [('response', '!=', 'declined')]}"/>
+                    <field name="assigned_by"/>
+                </group>
+                <footer>
+                    <button string="Submit" type="object" name="action_submit" class="btn-primary"/>
+                    <button string="Cancel" type="object" name="action_cancel" class="btn-default"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

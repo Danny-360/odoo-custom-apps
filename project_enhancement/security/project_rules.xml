@@ -1,0 +1,54 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<odoo>
+    <data noupdate="1">
+        <!-- Rule for Project Owner -->
+        <record id="rule_project_owner" model="ir.rule">
+            <field name="name">Project Owner Rule</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4, ref('project_enhancement.group_project_owner'))]"/>
+        </record>
+
+        <!-- Rule for Departmental Manager -->
+        <record id="rule_project_department_manager" model="ir.rule">
+            <field name="name">Departmental Manager Rule</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">[('department_id.manager_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4, ref('project_enhancement.group_project_department_manager'))]"/>
+        </record>
+
+        <!-- Rule for Admin -->
+        <record id="rule_project_admin" model="ir.rule">
+            <field name="name">Project Admin Rule</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('project_enhancement.group_project_admin'))]"/>
+        </record>
+        
+        <!-- Rule for assigned Project Task -->
+        <!-- <record id="rule_task_owner" model="ir.rule">
+            <field name="name">Task Owner Rule</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">['|', ('create_uid', '=', user.id), ('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('project_enhancement.group_project_owner'))]"/>
+        </record> -->
+
+
+
+        <!-- Disable default project rules -->
+        <!-- <record id="project.rule_public_project" model="ir.rule" eval="True">
+            <field name="active" eval="False"/>
+        </record>
+        <record id="project.rule_private_project_user" model="ir.rule">
+            <field name="active" eval="False"/>
+        </record> -->
+    </data>
+</odoo>
