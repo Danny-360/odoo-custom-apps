@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_blue_chip_cash_advance_blue_chip_cash_advance,blue_chip_cash_advance.blue_chip_cash_advance,model_blue_chip_cash_advance,base.group_user,1,1,1,1
+access_blue_chip_cash_advance_implementation_budget,blue_chip_cash_advance.implementation_budget,model_implementation_budget,base.group_user,1,1,1,1
+access_current_request,blue_chip_cash_advance.current.request,model_current_request,base.group_user,1,1,1,1
+access_blue-chip-cash-advance_cumulative_disbursement,cumulative.disbursement,model_cumulative_disbursement,base.group_user,1,1,1,1
+access_blue-chip-cash-advance_implementation_cost,blue-chip-cash-advance.implementation_cost,model_implementation_cost,base.group_user,1,1,1,1
+

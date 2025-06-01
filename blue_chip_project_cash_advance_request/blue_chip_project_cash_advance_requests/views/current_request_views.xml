@@ -1,0 +1,53 @@
+<!-- views/current_request_views.xml -->
+<odoo>
+    <data>
+        <!-- Current Request Tree View -->
+        <record model="ir.ui.view" id="current_request_tree_view">
+            <field name="name">current.request.tree</field>
+            <field name="model">current.request</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" >
+                    <field name="cash_advance_request_id" invisible="1" readonly="1"/>
+                    <field name="item" attrs="{'readonly': [('approval_status', '=', 'approved')]}"/>
+                    <field name="requested_amount" sum="Total Amount" attrs="{'readonly': [('approval_status', '=', 'approved')]}"/>
+                    <field name="currency_id" attrs="{'readonly': [('approval_status', '=', 'approved')]}"/>
+                    <field name="description" attrs="{'readonly': [('approval_status', '=', 'approved')]}"/>
+                    <field name="approval_status" attrs="{'readonly': [('approval_status', '=', 'approved')]}"/>
+                    <field name="disbursement_status" attrs="{'readonly': [('approval_status', '=', 'approved')]}"/>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight" 
+                                attrs="{'invisible': [('approval_status', '=', 'approved')]}" groups="blue_chip_project_cash_advance_requests.group_md_ceo"/>
+
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary"
+                                attrs="{'invisible': [('approval_status', '=', 'not_approved')]}" groups="blue_chip_project_cash_advance_requests.group_md_ceo"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Current Request Form View -->
+        <record model="ir.ui.view" id="current_request_form_view">
+            <field name="name">current.request.form</field>
+            <field name="model">current.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="description"/>
+                            <field name="requested_amount"/>
+                            <field name="currency_id"/>
+                            <field name="item"/>
+                            <field name="approval_status"/>
+                            <field name="disbursement_status"/>
+                            <field name="is_editable" attrs="{'readonly': [('is_editable', '=', False)]}"/>
+                            <field name="cash_advance_request_id" invisible="1" readonly="1"/>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                        </div>
+                    </sheet>                    
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

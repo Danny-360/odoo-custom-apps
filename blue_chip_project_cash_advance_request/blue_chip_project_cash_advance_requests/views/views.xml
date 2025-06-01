@@ -1,0 +1,208 @@
+<odoo>
+  <data>
+    <!-- Explicit list view definition -->
+    <!-- List view definition for Cash Advance -->
+    <record model="ir.ui.view" id="blue_chip_cash_advance_list">
+      <field name="name">blue_chip_cash_advance.list</field>
+      <field name="model">blue_chip_cash_advance</field>
+      <field name="arch" type="xml">
+        <tree delete="false">
+          <field name="name" />
+          <field name="sale_order_id" />
+          <field name="project_manager_id" />
+          <field name="project_duration" />
+          <field name="project_description" />
+          <field name="state" />
+        </tree>
+      </field>
+    </record>
+
+    <!-- Form view for Cash Advance -->
+    <record id="view_form_blue_chip_cash_advance" model="ir.ui.view">
+      <field name="name">blue_chip_cash_advance.form</field>
+      <field name="model">blue_chip_cash_advance</field>
+      <field name="arch" type="xml">
+        <form string="Blue Chip Cash Advance">
+          <header>
+            <button name="action_chro_approve" string="CHRO Approve" type="object" attrs="{'invisible': [('state', '!=', 'draft')]}"
+              groups="blue_chip_project_cash_advance_requests.group_chro" />
+            <button name="action_pm_approve" string="PM Approve" type="object" attrs="{'invisible': [('state', '!=', 'chro')]}"
+              groups="blue_chip_project_cash_advance_requests.group_pm" />
+            <button name="action_cmo_approve" string="CMO Approve" type="object" attrs="{'invisible': [('state', '!=', 'pm')]}"
+              groups="blue_chip_project_cash_advance_requests.group_cmo" />
+            <button name="action_cto_approve" string="CTO Approve" type="object" attrs="{'invisible': [('state', '!=', 'cmo')]}"
+              groups="blue_chip_project_cash_advance_requests.group_cto" />
+            <button name="action_md_approve" string="MD/CEO Approve" type="object" attrs="{'invisible': [('state', '!=', 'cto')]}"
+              class="oe_highlight" groups="blue_chip_project_cash_advance_requests.group_md_ceo" />
+            <button name="action_cfo_approve" string="CFO Approve" type="object" attrs="{'invisible': [('state', '!=', 'md')]}"
+              groups="blue_chip_project_cash_advance_requests.group_cfo" />
+
+            <!-- Refuse Button (Single for all states) -->
+            <button name="action_refuse" string="Refuse" type="object" attrs="{'invisible': [('state', '=', 'draft')]}" class="oe_highlight"
+              groups="blue_chip_project_cash_advance_requests.group_chro,
+                            blue_chip_project_cash_advance_requests.group_pm,
+                            blue_chip_project_cash_advance_requests.group_cmo,
+                            blue_chip_project_cash_advance_requests.group_cto,
+                            blue_chip_project_cash_advance_requests.group_md_ceo,
+                            blue_chip_project_cash_advance_requests.group_cfo"/>
+
+            <field name="state" widget="statusbar"
+              statusbar_colors="{'draft': 'blue', 'chro': 'pink', 'pm': 'purple', 'cmo': 'teal', 'cto': 'red', 'md': 'orange', 'cfo': 'green'}"
+              statusbar_visible="draft,chro,pm,cmo,cto,md,cfo" />
+          </header>
+          <sheet>
+            <group string="Project Details">
+              <field name="name" string="Project Name" />
+              <field name="sale_order_id" string="Sale Order"
+                options="{'no_open':True,'no_create': True}" />
+              <field name="project_manager_id" string="Project Manager"
+                options="{'no_open':True,'no_create': True}" />
+              <field name="project_duration" string="Project Duration" />
+              <field name="project_description" string="Project Description" />
+              <field name="analytic_account_name"/>
+            </group>
+            <notebook>
+              <page string="Implementation Budget">
+                <field name="implementation_budget_line_ids" widget="one2many_list" mode="tree,kanban" create="false" delete="false" 
+                        context="{'create': False, 'delete': False}">
+                  <tree editable="bottom">
+                    <field name="sale_order_id"/>
+                    <field name="description" />
+                    <field name="sale_order_amount"/>
+                    <field name="currency_id" />
+                    <!-- <field name="date" /> -->
+                  </tree>
+                  <form string="Implementation Budget Line">
+                    <sheet>
+                      <group>
+                        <field name="sale_order_id"/>
+                        <field name="description" />
+                        <field name="sale_order_amount"/>
+                        <field name="currency_id" />
+                      </group>
+                    </sheet>
+                  </form>
+                </field>
+              </page>
+
+              <page string="Implementation Cost">
+                <field name="implementation_cost_line_ids" widget="one2many_list" mode="tree,kanban">
+                  <tree>
+                    <field name="name" />
+                    <field name="sequence" widget="handle" />
+                    <field name="amount" sum="Total" widget="monetary"
+                      options="{'currency_field': 'currency_id'}" />
+                    <field name="currency_id" invisible="1" />
+                    <!-- <field name="date"/> -->
+                  </tree>
+                  <form string="Implementation Cost Line">
+                    <sheet>
+                      <group>
+                        <field name="name" />
+                        <field name="amount" />
+                        <field name="currency_id" />
+                      </group>
+                      <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                      </div>
+                    </sheet>
+                  </form>
+                </field>
+              </page>
+
+              <page string="Current Request">
+                <field name="current_request_id"
+                  context="{'form_view_ref': 'blue_chip_project_cash_advance_request.current_request_form_view',
+                        'tree_view_ref': 'blue_chip_project_cash_advance_request.current_request_tree_view', 'default_cash_advance_request_id': id}">
+                </field>
+              </page>
+              <page string="Cumulative Disbursement">
+                  <field name="cumulative_disbursement_line_ids" widget="one2many_list" mode="tree">
+                      <tree>
+                          <field name="cash_advance_request_id" attrs="{'readonly': [('disbursed', '=', True)]}" invisible="1" readonly="1"/>
+                          <field name="current_request_id" attrs="{'readonly': [('disbursed', '=', True)]}" invisible="1" readonly="1"/>
+                          <field name="date" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="description" sum="TOTAL" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="debit" sum="Total Debit" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="debit_account_id" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="credit" sum="Total Credit" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="credit_account_id" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="balance" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                          <field name="disbursed" invisible="1" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                      </tree>
+                      <form>
+                          <sheet>
+                              <header>
+                                  <button name="action_disburse" type="object" string="Disburse" class="btn-primary" attrs="{'invisible': [('disbursed', '=', True)]}" groups="blue_chip_project_cash_advance_requests.group_cfo"/>
+                                  <button name="action_reset_disbursement" type="object" string="Reset to Draft" class="btn-secondary" attrs="{'invisible': [('disbursed', '=', False)]}" groups="blue_chip_project_cash_advance_requests.group_cfo"/>
+                              </header>                              
+                              <group attrs="{'readonly': [('disbursed', '=', True)]}">
+                                  <field name="cash_advance_request_id" invisible="1" readonly="1"/>
+                                  <!-- <field name="request_ids" widget="many2many_tags" options="{'no_create': True}"/> -->
+                                  <field name="current_request_id" options="{'no_create': True}" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="date" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="description" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="debit" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="debit_account_id" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="credit" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="credit_account_id" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="balance" readonly="1" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="journal_id" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="journal_entry_id" readonly="1" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                                  <field name="disbursed" invisible="1" attrs="{'readonly': [('disbursed', '=', True)]}"/>
+                              </group>
+                              <div class="oe_chatter">
+                                <field name="message_follower_ids" widget="mail_followers"/>
+                                <field name="message_ids" widget="mail_thread"/>
+                                <field name="activity_ids" widget="mail_activity"/>
+                              </div>
+                          </sheet>
+                      </form>
+                  </field>
+              </page>
+
+              <page string="Resource Allocation">
+                <group>
+                  <field name="resource_name" />
+                  <field name="request_date" />
+                  <field name="project_account_code" />
+                  <field name="project_location" />
+                  <field name="site_id" />
+                  <field name="implementation_cost" />
+                  <field name="team_lead" />
+                  <field name="freelance" />
+                  <field name="riggers" />
+                  <field name="engineer" />
+                  <field name="ehs_vehicle" />
+                  <field name="canter_truck" />
+                </group>
+              </page>
+                
+            </notebook>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Action opening views on models -->
+    <record model="ir.actions.act_window" id="blue_chip_cash_advance_action_window">
+      <field name="name">PCA Form</field>
+      <field name="res_model">blue_chip_cash_advance</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Top Menu -->
+    <menuitem name="PCA Form" id="blue_chip_cash_advance_menu_root" sequence="10"
+      action="blue_chip_cash_advance_action_window" />
+
+    <!-- Menu categories -->
+    <menuitem name="Cash Advances" id="blue_chip_cash_advance_menu_1"
+      parent="blue_chip_cash_advance_menu_root" sequence="20" />
+  </data>
+</odoo>
