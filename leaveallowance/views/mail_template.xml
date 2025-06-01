@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="email_template_leave" model="mail.template">
+        <field name="name">Custom Model Notification</field>
+        <field name="model_id" ref="model_leave_allowance"/>
+        <field name="subject">Notification from Custom Model</field>
+        <field name="email_from">${object.employee_id.email | safe}</field>
+        <field name="email_to">${object.employee_id.user_id.partner_id.email | safe}</field>
+        <field name="body_html">
+            <![CDATA[
+                <p>Hello ${object.employee_id.name},</p>
+                <p>This is a notification about: ${object.name}.</p>
+                <!-- <p>Details: ${object.description}</p> -->
+                <p>Best regards,<br/>Your Company</p>
+            ]]>
+        </field>
+    </record>
+</odoo>

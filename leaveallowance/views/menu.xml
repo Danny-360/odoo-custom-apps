@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Leave Allowance App Menu -->
+    <menuitem id="menu_leave_allowance" name="Leave Allowance" sequence="11"/>
+
+
+    <!-- Action to open the Allowance list -->
+    <record id="action_leave_allowance" model="ir.actions.act_window">
+        <field name="name">Leave Allowances</field>
+        <field name="res_model">leave.allowance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_leave_schedule" name="Payment Schedule" action="action_leave_allowance" parent="menu_leave_allowance" sequence="10"/>
+
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_allowance" model="ir.ui.view">
+        <field name="name">Allowance Form</field>
+        <field name="model">leave.allowance</field>
+        <field name="arch" type="xml">
+            <form string="Allowance">
+                <header>
+                    <!-- <button name="button_check_isbn" string="Check ISBN" type="object" /> -->
+                    <button name="send_notification_email" type="object" string="Send Notification"/>
+
+                </header>
+                <sheet>
+                    <group name="group_top">
+                        <group name="group_left">
+                            <field name="employee_id" />
+                            <field name="is_proration" />
+                            <field name="year_first_day" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+                            <field name="exit_date" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+                            <field name="days_worked" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+                            <field name="months_worked" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+                            <field name="total_leave_days" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+                            <field name="leave_days_not_earned" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+                            <field name="leave_days_earned" attrs="{'invisible': [('is_proration', '!=', True)]}"/>
+
+
+                        </group>
+                        <group name="group_right">
+                            <field name="wage" string="Monthly Basic"/>
+                            <field name="months" />
+                            <field name="salary" />
+                            <field name="allowance" />
+                            <field name="taxable_allowance" />
+                            <field name="paye_tax" />
+                            <field name="payable" />
+                            <field name="leave_allowance_earned" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tree_allowance" model="ir.ui.view">
+        <field name="name">Allowance List</field>
+        <field name="model">leave.allowance</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id" />
+                <field name="is_proration" />
+                <field name="wage" string="Monthly Basic"/>
+                <field name="months" />
+                <field name="salary" />
+                <field name="allowance" />
+                <field name="taxable_allowance" />
+                <field name="paye_tax" />
+                <field name="payable" />
+                <field name="leave_allowance_earned" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_search_allowance" model="ir.ui.view">
+        <field name="name">Allowance Filters</field>
+        <field name="model">leave.allowance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"></field>
+
+            </search>
+        </field>
+    </record>
+
+</odoo>

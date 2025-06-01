@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="custom/leave_allowance.list">
+      <field name="name">custom/leave_allowance list</field>
+      <field name="model">custom/leave_allowance.custom/leave_allowance</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="custom/leave_allowance.action_window">
+      <field name="name">custom/leave_allowance window</field>
+      <field name="res_model">custom/leave_allowance.custom/leave_allowance</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="custom/leave_allowance.action_server">
+      <field name="name">custom/leave_allowance server</field>
+      <field name="model_id" ref="model_custom/leave_allowance_custom/leave_allowance"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="custom/leave_allowance" id="custom/leave_allowance.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="custom/leave_allowance.menu_1" parent="custom/leave_allowance.menu_root"/>
+    <menuitem name="Menu 2" id="custom/leave_allowance.menu_2" parent="custom/leave_allowance.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="custom/leave_allowance.menu_1_list" parent="custom/leave_allowance.menu_1"
+              action="custom/leave_allowance.action_window"/>
+    <menuitem name="Server to list" id="custom/leave_allowance" parent="custom/leave_allowance.menu_2"
+              action="custom/leave_allowance.action_server"/>
+-->
+  </data>
+</odoo>
