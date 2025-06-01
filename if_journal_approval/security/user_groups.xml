@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="group_finance_head" model="res.groups">
+            <field name="name">Journal Approver</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+			<field name="users" eval="[(4, ref('base.user_admin'))]"/>
+		</record>
+    </data>
+</odoo>

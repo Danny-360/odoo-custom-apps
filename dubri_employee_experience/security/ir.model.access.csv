@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_payslip_employee,access_hr_payslip_employee,hr_payroll.model_hr_payslip,base.group_user,1,0,0,0
+access_hr_payslip_manager,access_hr_payslip_manager,hr_payroll.model_hr_payslip,hr_payroll.group_hr_payroll_manager,1,1,1,1
+dubri_employee_experience.access_employee_pfa,access_employee_pfa,dubri_employee_experience.model_employee_pfa,base.group_user,1,1,1,1
+
+
